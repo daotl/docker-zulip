@@ -10,9 +10,9 @@ services:
       # the first time on a host.  Instructions are available in README.md.
       POSTGRES_PASSWORD: "REPLACE_WITH_SECURE_POSTGRES_PASSWORD"
     volumes:
-      - "/opt/docker/zulip/postgresql/data:/var/lib/postgresql/data:rw"
+      - "zulip_postgres:/var/lib/postgresql/data:rw"
   memcached:
-    image: "memcached:alpine"
+    image: "memcached:1.6-alpine"
     command:
       - "sh"
       - "-euc"
@@ -33,7 +33,7 @@ services:
       RABBITMQ_DEFAULT_USER: "zulip"
       RABBITMQ_DEFAULT_PASS: "REPLACE_WITH_SECURE_RABBITMQ_PASSWORD"
     volumes:
-      - "/opt/docker/zulip/rabbitmq:/var/lib/rabbitmq:rw"
+      - "zulip_rabbitmq:/var/lib/rabbitmq:rw"
   redis:
     image: "redis:alpine"
     command:
@@ -45,21 +45,22 @@ services:
     environment:
       REDIS_PASSWORD: "REPLACE_WITH_SECURE_REDIS_PASSWORD"
     volumes:
-      - "/opt/docker/zulip/redis:/data:rw"
+      - "zulip_redis:/data:rw"
   zulip:
     image: "zulip/docker-zulip:4.7-0"
-    build:
-      context: .
-      args:
-        # Change these if you want to build zulip from a different repo/branch
-        ZULIP_GIT_URL: https://github.com/zulip/zulip.git
-        ZULIP_GIT_REF: "4.7"
-        # Set this up if you plan to use your own CA certificate bundle for building
-        # CUSTOM_CA_CERTIFICATES:
+    # build:
+    #   context: .
+    #   args:
+    #     # Change these if you want to build zulip from a different repo/branch
+    #     ZULIP_GIT_URL: https://github.com/zulip/zulip.git
+    #     ZULIP_GIT_REF: "4.7"
+    #     # Set this up if you plan to use your own CA certificate bundle for building
+    #     # CUSTOM_CA_CERTIFICATES:
     ports:
       - "80:80"
       - "443:443"
     environment:
+      # DISABLE_HTTPS: "True"
       DB_HOST: "database"
       DB_HOST_PORT: "5432"
       DB_USER: "zulip"
@@ -87,8 +88,30 @@ services:
       # Uncomment this when configuring the mobile push notifications service
       # SETTING_PUSH_NOTIFICATION_BOUNCER_URL: 'https://push.zulipchat.com'
     volumes:
-      - "/opt/docker/zulip/zulip:/data:rw"
+      - "zulip_zulip:/data:rw"
     ulimits:
       nofile:
         soft: 1000000
         hard: 1048576
+
+volumes:
+  zulip_postgres:
+    driver_opts:
+      type: none
+      device: ${ZULIP_VOLUMES_ROOT}/postgres
+      o: bind
+  zulip_rabbitmq:
+    driver_opts:
+      type: none
+      device: ${ZULIP_VOLUMES_ROOT}/rabbitmq
+      o: bind
+  zulip_redis:
+    driver_opts:
+      type: none
+      device: ${ZULIP_VOLUMES_ROOT}/redis
+      o: bind
+  zulip_zulip:
+    driver_opts:
+      type: none
+      device: ${ZULIP_VOLUMES_ROOT}/zulip
+      o: bind
