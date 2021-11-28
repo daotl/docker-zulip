@@ -56,11 +56,16 @@ services:
     #     ZULIP_GIT_REF: "4.7"
     #     # Set this up if you plan to use your own CA certificate bundle for building
     #     # CUSTOM_CA_CERTIFICATES:
-    ports:
-      - "80:80"
-      - "443:443"
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    networks:
+      - default
+      - web
+    expose:
+      - 80
     environment:
-      # DISABLE_HTTPS: "True"
+      DISABLE_HTTPS: "True"
       DB_HOST: "database"
       DB_HOST_PORT: "5432"
       DB_USER: "zulip"
@@ -93,6 +98,11 @@ services:
       nofile:
         soft: 1000000
         hard: 1048576
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.taiga.entryPoints: web
+      traefik.http.routers.taiga.tls.certResolver: default
+      traefik.http.routers.taiga.rule: Host(`zulip.example.com`)
 
 volumes:
   zulip_postgres:
@@ -115,3 +125,7 @@ volumes:
       type: none
       device: ${ZULIP_VOLUMES_ROOT}/zulip
       o: bind
+
+networks:
+  web:
+    external: true
