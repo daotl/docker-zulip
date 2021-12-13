@@ -35,7 +35,7 @@ services:
     volumes:
       - "zulip_rabbitmq:/var/lib/rabbitmq:rw"
   redis:
-    image: "redis:alpine"
+    image: "redis:6.2-alpine"
     command:
       - "sh"
       - "-euc"
