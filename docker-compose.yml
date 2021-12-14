@@ -108,22 +108,22 @@ volumes:
   zulip_postgres:
     driver_opts:
       type: none
-      device: ${ZULIP_VOLUMES_ROOT}/postgres
+      device: ${VOLUMES_ROOT}/postgres
       o: bind
   zulip_rabbitmq:
     driver_opts:
       type: none
-      device: ${ZULIP_VOLUMES_ROOT}/rabbitmq
+      device: ${VOLUMES_ROOT}/rabbitmq
       o: bind
   zulip_redis:
     driver_opts:
       type: none
-      device: ${ZULIP_VOLUMES_ROOT}/redis
+      device: ${VOLUMES_ROOT}/redis
       o: bind
   zulip_zulip:
     driver_opts:
       type: none
-      device: ${ZULIP_VOLUMES_ROOT}/zulip
+      device: ${VOLUMES_ROOT}/zulip
       o: bind
 
 networks:
