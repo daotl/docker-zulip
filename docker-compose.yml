@@ -100,9 +100,9 @@ services:
         hard: 1048576
     labels:
       traefik.enable: "true"
-      traefik.http.routers.taiga.entryPoints: web
-      traefik.http.routers.taiga.tls.certResolver: default
-      traefik.http.routers.taiga.rule: Host(`zulip.example.com`)
+      traefik.http.routers.zulip.entryPoints: web
+      traefik.http.routers.zulip.tls.certResolver: default
+      traefik.http.routers.zulip.rule: Host(`zulip.example.com`)
 
 volumes:
   zulip_postgres:
