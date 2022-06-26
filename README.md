@@ -6,10 +6,10 @@ This is a container image for running [Zulip](https://zulip.com)
 ([GitHub](https://github.com/zulip/zulip)) in
 [production][prod-overview]. Image available from:
 
-* [**Docker Hub**](https://hub.docker.com/r/zulip/docker-zulip) (`docker pull zulip/docker-zulip:4.11-0`)
+* [**Docker Hub**](https://hub.docker.com/r/zulip/docker-zulip) (`docker pull zulip/docker-zulip:5.3-0`)
 
-Current Zulip version: `4.11`
-Current Docker image version: `4.11-0`
+Current Zulip version: `5.3`
+Current Docker image version: `5.3-0`
 
 Project status: **Alpha**.  While this project works and is
 used by many sites in production, configuring is substantially more
@@ -209,6 +209,13 @@ putting it in `/opt/docker/zulip/zulip/certs/` (by default, the
 `zulip` container startup script will generate a self-signed certificate and
 install it in that directory).
 
+**Load balancer**. To tell Zulip it's behind a load balancer, you can set
+`LOADBALANCER_IPS` to a comma-separated list of IPs. This will tell Zulip
+to pass the real IP of the client instead of the IP of the load balancer itself
+by [setting the IPs][loadbalancer-ips] under `[loadbalancer]` in `zulip.conf`.
+
+[loadbalancer-ips]: https://zulip.readthedocs.io/en/latest/production/deployment.html#configuring-zulip-to-trust-proxies
+
 ### Manual configuration
 
 The way the environment variables configuration process described in
@@ -329,17 +336,11 @@ signing up for a cloud service is to install
 
 ### Helm charts
 
-We are aware of two efforts at building Helm Charts for Zulip:
-* [A PR to the main Helm repo](https://github.com/kubernetes/charts/pull/5168/files),
-  which is further along.
-* [The zulip-helm project](https://github.com/armooo/zulip-helm),
-  which might be a helpful reference for work on this.
+Read the [Helm Chart README](kubernetes/chart/zulip/README.md) to learn more
+about installing Zulip on a Kubernetes cluster with Helm.
 
-Contributions to finish either of those and get them integrated are
-very welcome!  If you're interested in helping with this, post on
-[this thread][helm-chart-thread].
-
-[helm-chart-thread]: https://chat.zulip.org/#narrow/stream/21-provision-help/subject/K8.20and.20Helm/near/589098
+Feedback is welcome in the [helm-chart-thread]:
+https://chat.zulip.org/#narrow/stream/21-provision-help/subject/K8.20and.20Helm/near/589098
 
 ### Scaling out and high availability
 
