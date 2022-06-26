@@ -65,6 +65,7 @@ services:
     expose:
       - 80
     environment:
+      LOADBALANCER_IPS: 172.19.0.6
       DISABLE_HTTPS: "True"
       DB_HOST: "database"
       DB_HOST_PORT: "5432"
