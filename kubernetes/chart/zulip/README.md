@@ -1,6 +1,6 @@
 # Zulip
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.3-0](https://img.shields.io/badge/AppVersion-5.3--0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 6.1-0](https://img.shields.io/badge/AppVersion-6.1--0-informational?style=flat-square)
 
 [Zulip](https://zulip.com/) is an open source threaded team chat that helps teams stay productive and focused.
 
@@ -72,7 +72,7 @@ Now you're ready to follow [the installation instructions above](#installation).
 | fullnameOverride | string | `""` | Fully override common.names.fullname template. |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for Zulip docker image. Ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images |
 | image.repository | string | `"zulip/docker-zulip"` | Defaults to hub.docker.com/zulip/docker-zulip, but can be overwritten with a full HTTPS address. |
-| image.tag | string | `"5.3-0"` | Zulip image tag (immutable tags are recommended) |
+| image.tag | string | `"6.1-0"` | Zulip image tag (immutable tags are recommended) |
 | imagePullSecrets | list | `[]` | Global Docker registry secret names as an array. |
 | ingress.annotations | object | `{}` | Can be used to add custom Ingress annotations. |
 | ingress.enabled | bool | `false` | Enable this to use an Ingress to reach the Zulip service. |
@@ -86,7 +86,7 @@ Now you're ready to follow [the installation instructions above](#installation).
 | podAnnotations | object | `{}` | Custom annotations to add to the Zulip Pod. |
 | podLabels | object | `{}` | Custom labels to add to the Zulip Pod. |
 | podSecurityContext | object | `{}` | Can be used to override the default PodSecurityContext (fsGroup, runAsUser and runAsGroup) of the Zulip _Pod_. |
-| postSetup.scripts | object | `{}` | The Docker entrypoint script runs commands from `/data/post-setup.d` after the Zulip application's Setup phase has completed. Scripts can be added here  as `script_filename: <script contents>` and they will be mounted in `/data/post-setup.d/script_filename`. |
+| postSetup.scripts | object | `{}` | The Docker entrypoint script runs commands from `/data/post-setup.d` after the Zulip application's Setup phase has completed. Scripts can be added here as `script_filename: <script contents>` and they will be mounted in `/data/post-setup.d/script_filename`. |
 | postgresql | object | `{"auth":{"database":"zulip","username":"zulip"},"image":{"repository":"zulip/zulip-postgresql","tag":14},"primary":{"containerSecurityContext":{"runAsUser":0}}}` | PostgreSQL settings, see [Requirements](#Requirements). |
 | rabbitmq | object | `{"auth":{"username":"zulip"},"persistence":{"enabled":false}}` | Rabbitmq settings, see [Requirements](#Requirements). |
 | redis | object | `{"architecture":"standalone","master":{"persistence":{"enabled":false}}}` | Redis settings, see [Requirements](#Requirements). |

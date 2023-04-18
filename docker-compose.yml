@@ -1,7 +1,8 @@
 version: "2"
 services:
   database:
-    image: "zulip/zulip-postgresql:10"
+    image: "zulip/zulip-postgresql:14"
+    restart: unless-stopped
     environment:
       POSTGRES_DB: "zulip"
       POSTGRES_USER: "zulip"
@@ -13,6 +14,7 @@ services:
       - "zulip_postgres:/var/lib/postgresql/data:rw"
   memcached:
     image: "memcached:1.6-alpine"
+    restart: unless-stopped
     command:
       - "sh"
       - "-euc"
@@ -25,10 +27,9 @@ services:
       SASL_CONF_PATH: "/home/memcache/memcached.conf"
       MEMCACHED_SASL_PWDB: "/home/memcache/memcached-sasl-db"
       MEMCACHED_PASSWORD: "REPLACE_WITH_SECURE_MEMCACHED_PASSWORD"
-    restart: always
   rabbitmq:
     image: "rabbitmq:3.7.7"
-    restart: always
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: "zulip"
       RABBITMQ_DEFAULT_PASS: "REPLACE_WITH_SECURE_RABBITMQ_PASSWORD"
@@ -36,6 +37,7 @@ services:
       - "zulip_rabbitmq:/var/lib/rabbitmq:rw"
   redis:
     image: "redis:6.2-alpine"
+    restart: unless-stopped
     command:
       - "sh"
       - "-euc"
@@ -47,13 +49,14 @@ services:
     volumes:
       - "zulip_redis:/data:rw"
   zulip:
-    image: "zulip/docker-zulip:5.3-0"
+    image: "zulip/docker-zulip:6.1-0"
+    restart: unless-stopped
     # build:
     #   context: .
     #   args:
     #     # Change these if you want to build zulip from a different repo/branch
     #     ZULIP_GIT_URL: https://github.com/zulip/zulip.git
-    #     ZULIP_GIT_REF: "5.3"
+    #     ZULIP_GIT_REF: "6.1"
     #     # Set this up if you plan to use your own CA certificate bundle for building
     #     # CUSTOM_CA_CERTIFICATES:
     # ports:
