@@ -70,7 +70,7 @@ include all env variables for Zulip pods
 - name: DB_HOST_PORT
   value: "{{ template "postgresql.service.port" .Subcharts.postgresql }}"
 - name: DB_USER
-  value: "postgres"
+  value: "{{ .Values.postgresql.auth.username }}"
 - name: SETTING_MEMCACHED_LOCATION
   value: "{{ template "common.names.fullname" .Subcharts.memcached }}:11211"
 - name: SETTING_RABBITMQ_HOST
