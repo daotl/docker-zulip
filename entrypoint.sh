@@ -121,44 +121,32 @@ setConfigurationValue() {
 }
 nginxConfiguration() {
     echo "Executing nginx configuration ..."
-    if [ "$DISABLE_HTTPS" == "True" ] || [ "$DISABLE_HTTPS" == "true" ]; then
-        echo "Disabling https in nginx."
-        crudini --set /etc/zulip/zulip.conf application_server http_only true
-        /home/zulip/deployments/current/scripts/zulip-puppet-apply -f
-    fi
     sed -i "s/worker_processes .*/worker_processes $NGINX_WORKERS;/g" /etc/nginx/nginx.conf
     sed -i "s/client_max_body_size .*/client_max_body_size $NGINX_MAX_UPLOAD_SIZE;/g" /etc/nginx/nginx.conf
     sed -i "s/proxy_buffering .*/proxy_buffering $NGINX_PROXY_BUFFERING;/g" /etc/nginx/zulip-include/proxy_longpolling
     echo "Nginx configuration succeeded."
 }
-additionalPuppetConfiguration() {
-    echo "Executing additional puppet configuration ..."
+puppetConfiguration() {
+    echo "Executing puppet configuration ..."
 
-    local changedPuppetConf=false
-
+    if [ "$DISABLE_HTTPS" == "True" ] || [ "$DISABLE_HTTPS" == "true" ]; then
+        echo "Disabling https in nginx."
+        crudini --set /etc/zulip/zulip.conf application_server http_only true
+    fi
     if [ "$QUEUE_WORKERS_MULTIPROCESS" == "True" ] || [ "$QUEUE_WORKERS_MULTIPROCESS" == "true" ]; then
         echo "Setting queue workers to run in multiprocess mode ..."
         crudini --set /etc/zulip/zulip.conf application_server queue_workers_multiprocess true
-        changedPuppetConf=true
     elif [ "$QUEUE_WORKERS_MULTIPROCESS" == "False" ] || [ "$QUEUE_WORKERS_MULTIPROCESS" == "false" ]; then
         echo "Setting queue workers to run in multithreaded mode ..."
         crudini --set /etc/zulip/zulip.conf application_server queue_workers_multiprocess false
-        changedPuppetConf=true
-    else
-        echo "No additional puppet configuration executed for queue workers."
     fi
 
     if [ -n "$LOADBALANCER_IPS" ]; then
         echo "Setting IPs for load balancer"
         crudini --set /etc/zulip/zulip.conf loadbalancer ips "${LOADBALANCER_IPS}"
-        changedPuppetConf=true
-    else
-        echo "No additional puppet configuration executed for load balancer IPs."
     fi
 
-    if [ "$changedPuppetConf" = true ]; then
-        /home/zulip/deployments/current/scripts/zulip-puppet-apply -f
-    fi
+    /home/zulip/deployments/current/scripts/zulip-puppet-apply -f
 }
 configureCerts() {
     case "$SSL_CERTIFICATE_GENERATION" in
@@ -329,9 +317,9 @@ autoBackupConfiguration() {
 initialConfiguration() {
     echo "=== Begin Initial Configuration Phase ==="
     prepareDirectories
+    puppetConfiguration
     nginxConfiguration
     configureCerts
-    additionalPuppetConfiguration
     if [ "$MANUAL_CONFIGURATION" = "False" ] || [ "$MANUAL_CONFIGURATION" = "false" ]; then
         # Start with the settings template file.
         cp -a /home/zulip/deployments/current/zproject/prod_settings_template.py "$SETTINGS_PY"
