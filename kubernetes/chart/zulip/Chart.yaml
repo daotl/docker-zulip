@@ -3,38 +3,40 @@ description: Zulip is an open source threaded team chat that helps teams stay pr
 name: zulip
 type: application
 icon: https://raw.githubusercontent.com/zulip/zulip/main/static/images/logo/zulip-icon-square.svg
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.8.4
+## This is the chart version. This version number should be
+## incremented each time you make changes to the chart and its
+## templates, including the app version.  Versions are expected to
+## follow Semantic Versioning (https://semver.org/)
+version: 0.10.3
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
-# It is recommended to use it with quotes.
-appVersion: "8.4-0"
+## This is the version number of the application being deployed. This
+## version number should be incremented each time you make changes to
+## the application. Versions are not expected to follow Semantic
+## Versioning. They should reflect the version the application is
+## using.  It is recommended to use it with quotes.
+appVersion: "10.3-0"
 dependencies:
   - name: memcached
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - memcached
-    version: 6.6.2
+    version: 7.4.16
   - name: rabbitmq
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - rabbitmq
-    version: 12.1.6
+    version: 14.7.0
   - name: redis
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - redis
-    version: 18.1.0
+    version: 20.1.4
   - name: postgresql
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - postgresql
-    # Note: values.yaml overwrites posgresql image to zulip/zulip-postgresql:14
-    version: 11.9.13
+    ## Note: values.yaml overwrites posgresql image to zulip/zulip-postgresql:14
+    version: 15.5.32
 
 sources:
   - https://github.com/zulip/zulip

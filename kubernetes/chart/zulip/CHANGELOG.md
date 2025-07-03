@@ -1,3 +1,52 @@
+## [0.10.3] - 2025-05-15
+
+- Update to Zulip Server 10.3
+
+## [0.10.2] - 2025-04-15
+
+- Update to Zulip Server 10.2
+
+## [0.10.1] - 2025-03-28
+
+- Update to Zulip Server 10.1
+
+## [0.10.0] - 2025-03-20
+
+- Update to Zulip Server 10.0
+
+## [0.9.40] - 2025-01-16
+
+- Update to Zulip Server 9.4
+
+## [0.9.30] - 2024-11-23
+
+- Update to Zulip Server 9.3
+
+## [0.9.20] - 2024-09-16
+
+- Update to Zulip Server 9.2
+- Change nginx's max-upload size to match standard Zulip (80m)
+
+## [0.9.13] - 2024-09-09
+
+- More thoroughly remove the `ubuntu` user
+
+## [0.9.12] - 2024-09-09
+
+- Fix consistent user-ID for `zulip` user
+
+## [0.9.11] - 2024-08-28
+
+- Packaging updates for Docker
+
+## [0.9.1] - 2024-08-02
+
+- Update Zulip Server to 9.1
+
+## [0.9.1] - 2024-07-25
+
+- Update Zulip Server to 9.1
+
 ## [0.8.4] - 2024-05-09
 
 - Update Zulip Server to 8.4

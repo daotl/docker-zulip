@@ -29,7 +29,7 @@ fi
 DISABLE_HTTPS="${DISABLE_HTTPS:-false}"
 NGINX_WORKERS="${NGINX_WORKERS:-2}"
 NGINX_PROXY_BUFFERING="${NGINX_PROXY_BUFFERING:-off}"
-NGINX_MAX_UPLOAD_SIZE="${NGINX_MAX_UPLOAD_SIZE:-24m}"
+NGINX_MAX_UPLOAD_SIZE="${NGINX_MAX_UPLOAD_SIZE:-80m}"
 # Zulip certifcate parameters
 SSL_CERTIFICATE_GENERATION="${SSL_CERTIFICATE_GENERATION:self-signed}"
 # Zulip related settings
@@ -278,10 +278,12 @@ zulipConfiguration() {
            [ "$setting_key" = "AUTH_LDAP_USER_FLAGS_BY_GROUP" ] || \
            [ "$setting_key" = "AUTH_LDAP_GROUP_TYPE" ] || \
            [ "$setting_key" = "AUTH_LDAP_ADVANCED_REALM_ACCESS_CONTROL" ] || \
+           [ "$setting_key" = "LDAP_SYNCHRONIZED_GROUPS_BY_REALM" ] || \
            [ "$setting_key" = "SOCIAL_AUTH_OIDC_ENABLED_IDPS" ] || \
            [ "$setting_key" = "SOCIAL_AUTH_SAML_ENABLED_IDPS" ] || \
            [ "$setting_key" = "SOCIAL_AUTH_SAML_ORG_INFO" ] || \
            { [ "$setting_key" = "LDAP_APPEND_DOMAIN" ] && [ "$setting_var" = "None" ]; } || \
+           [ "$setting_key" = "SCIM_CONFIG" ] || \
            [ "$setting_key" = "SECURE_PROXY_SSL_HEADER" ] || \
            [[ "$setting_key" = "CSRF_"* ]] || \
            [ "$setting_key" = "REALM_HOSTS" ] || \
@@ -364,7 +366,7 @@ zulipFirstStartInit() {
     echo "Zulip first start init sucessful."
 }
 zulipMigration() {
-    echo "Migrating Zulip to new version ..."
+    echo "Running new database migrations..."
     set +e
     su zulip -c "/home/zulip/deployments/current/manage.py migrate --noinput"
     local RETURN_CODE=$?
@@ -375,7 +377,7 @@ zulipMigration() {
     set -e
     rm -rf "$DATA_DIR/.zulip-*"
     touch "$DATA_DIR/.zulip-$ZULIP_VERSION"
-    echo "Zulip migration succeeded."
+    echo "Database migrations completed."
 }
 runPostSetupScripts() {
     echo "Post setup scripts execution ..."
@@ -453,7 +455,13 @@ appRun() {
     echo "=== Begin Run Phase ==="
     echo "Starting Zulip using supervisor with \"/etc/supervisor/supervisord.conf\" config ..."
     echo ""
+    unset HOME # avoid propagating HOME=/root to subprocesses not running as root
     exec supervisord -n -c "/etc/supervisor/supervisord.conf"
+}
+appInit() {
+    echo "=== Running initial setup ==="
+    initialConfiguration
+    bootstrappingEnvironment
 }
 appManagePy() {
     COMMAND="$1"
@@ -541,6 +549,7 @@ appHelp() {
     echo "> app:restore  - Restore backups of Zulip instances"
     echo "> app:certs    - Create self-signed certificates"
     echo "> app:run      - Run the Zulip server"
+    echo "> app:init     - Run inital setup of Zulip server"
     echo "> [COMMAND]    - Run given command with arguments in shell"
 }
 appVersion() {
@@ -554,6 +563,9 @@ appVersion() {
 case "$1" in
     app:run)
         appRun
+    ;;
+    app:init)
+        appInit
     ;;
     app:managepy)
         shift 1

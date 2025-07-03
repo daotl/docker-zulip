@@ -1,69 +1,27 @@
-# Welcome to docker-zulip!
+# Zulip Docker image overview
 
 [![](https://images.microbadger.com/badges/image/zulip/docker-zulip.svg)](https://microbadger.com/images/zulip/docker-zulip "Get your own image badge on microbadger.com") [![**docker-zulip** stream](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.zulip.org/#narrow/stream/backend/topic/docker)
 
-This is a container image for running [Zulip](https://zulip.com)
-([GitHub](https://github.com/zulip/zulip)) in
-[production][prod-overview]. Image available from:
+`docker-zulip` is the official Docker container image for running a
+[Zulip server](https://zulip.com) in
+[production][prod-overview]. Built images are available from: [Docker
+Hub](https://hub.docker.com/r/zulip/docker-zulip):
 
-- [**Docker Hub**](https://hub.docker.com/r/zulip/docker-zulip) (`docker pull zulip/docker-zulip:8.4-0`)
+```console
+$ docker pull zulip/docker-zulip:10.3-0
+```
 
-Current Zulip version: `8.4`
-Current Docker image version: `8.4-0`
+Current Zulip version: `10.3`
+Current Docker image version: `10.3-0`
 
-Project status: **Alpha**. While this project works and is
-used by many sites in production, configuring is substantially more
-error-prone than the [normal Zulip installer][normal-install] (which
-Just Works). We recommend this project if you want to host Zulip
-using Docker, but both setting up and maintaining a Zulip server is
-simpler and less error-prone with the normal installer than with Docker.
+We recommend using the Docker image if your organization has a
+preference for deploying services using Docker. Deploying with Docker
+moderately increases the effort required to install, maintain, and
+upgrade a Zulip installation, compared with the [standard Zulip
+installer][normal-install].
 
 [normal-install]: https://zulip.readthedocs.io/en/latest/production/install.html
-
-## Overview
-
-This project defines a Docker image for a Zulip server, as well as
-sample configuration to run that Zulip web/application server with
-each of the major [services that Zulip uses][zulip-architecture] in
-its own container: `redis`, `postgres`, `rabbitmq`, `memcached`.
-
-We have configuration and documentation for
-[Docker Compose](#running-a-zulip-server-with-docker-compose) and
-[Kubernetes](#running-a-zulip-server-with-kubernetes); contributions are welcome for
-documenting other container runtimes and flows.
-
-If you aren't already a Docker expert, we recommend starting by
-reading our brief overview of how Docker and containers work in the
-next section.
-
 [zulip-architecture]: https://zulip.readthedocs.io/en/latest/overview/architecture-overview.html
-
-### The Docker data storage model
-
-Docker and other container systems are built around shareable
-container images. An image is a read-only template with instructions
-for creating a container. Often, an image is based on another image,
-with a bit of additional customization. For example, Zulip's
-`zulip-postgresql` image extends the standard `postgresql` image (by
-installing a couple `postgres` extensions). And the `zulip` image is
-built on top of a standard `ubuntu` image, adding all the code for a Zulip
-application/web server.
-
-Every time you boot a container based on a given image, it's like
-booting off a CD-ROM: you get the exact same image (and anything
-written to the image's filesystem is lost). To handle persistent
-state that needs to persist after the Docker equivalent of a reboot or
-upgrades (like uploaded files or the Zulip database), container
-systems let you configure certain directories inside the container
-from the host.
-
-This project's `docker-compose.yml` configuration file uses [Docker managed
-volumes][volumes] to store [persistent Zulip data][persistent-data]. If you use
-the Docker Compose deployment, you should make sure that Zulip's volumes are
-backed up, to ensure that Zulip's data is backed up.
-
-[volumes]: https://docs.docker.com/storage/volumes/
-[persistent-data]: https://zulip.readthedocs.io/en/latest/production/maintain-secure-upgrade.html#backups
 
 ## Prerequisites
 
@@ -74,26 +32,72 @@ To use `docker-zulip`, you need the following:
   engine.
 - We [recommend at least 2GB of available RAM][prod-requirements] for
   running a production Zulip server; you'll want 4GB if you're
-  building the container (rather than using the prebuilt images). If
+  building the container (rather than using the pre-built images). If
   you're just testing and/or aren't expecting a lot of users/messages,
   you can get away with significantly less especially for the
   `postgres`, `memcached`, etc. containers, because Docker makes it
   easy to sharply limit the RAM allocated to the services Zulip
-  depends on, like redis, memcached, and postgresql (at the cost of
+  depends on, like Redis, memcached, and PostgreSQL (at the cost of
   potential performance issues).
 - This project doesn't support `docker-rootless`; Zulip needs root
   access to set properties like the maximum number of open file
   descriptions via `ulimit` (which is important for it to handle
   thousands of connected clients).
 
+If you aren't already a Docker expert, we recommend starting by
+reading our brief overview of how Docker and containers work in the
+next section for important background that the rest of this
+documentation will assume.
+
+Otherwise, you can jump to our documentation for your preferred
+container runtime:
+
+- [Docker Compose](#running-a-zulip-server-with-docker-compose)
+- [Kubernetes](#running-a-zulip-server-with-kubernetes)
+
 [install-docker]: https://docs.docker.com/install/
 [install-docker-compose]: https://docs.docker.com/compose/install/
 [prod-overview]: https://zulip.readthedocs.io/en/latest/production/overview.html
 [prod-requirements]: https://zulip.readthedocs.io/en/latest/production/requirements.html
 
+## The Docker data storage model
+
+Docker and other container systems are built around shareable
+container images. An image is a read-only template with instructions
+for creating a container.
+
+Often, an image is based on another image, with a bit of additional
+customization. For example, Zulip's `zulip-postgresql` image extends
+the standard `postgresql` image (by installing a couple `postgres`
+extensions). Meanwhile, the `zulip` image is built on top of a
+standard `ubuntu` image, adding all the code for a Zulip
+application/web server.
+
+Every time you boot a container based on a given image, it's like
+booting off a CD-ROM: you get the exact same image (and anything
+written to the image's filesystem is lost). To handle persistent
+state that needs to persist after the Docker equivalent of a reboot or
+upgrades (like uploaded files or the Zulip database), container
+systems let you configure certain directories inside the container
+from the host.
+
+This project's `docker-compose.yml` configuration file uses [Docker
+managed volumes][volumes] to store [persistent Zulip
+data][persistent-data]. If you use the Docker Compose deployment, you
+should make sure that Zulip's volumes are backed up, to ensure that
+Zulip's data is backed up.
+
+This project defines a Docker image for a Zulip server, as well as
+sample configuration to run that Zulip server with each of the major
+[services that Zulip uses][zulip-architecture] in its own container:
+`redis`, `postgres`, `rabbitmq`, `memcached`.
+
+[volumes]: https://docs.docker.com/storage/volumes/
+[persistent-data]: https://zulip.readthedocs.io/en/latest/production/export-and-import.html#backups
+
 ## Running a Zulip server with docker-compose
 
-To use this project, we recommend starting by cloning the repo (since
+To use this project, we recommend starting by cloning the repository (since
 you'll want to edit the `docker-compose.yml` file in this project):
 
 ```
@@ -102,9 +106,9 @@ cd docker-zulip
 # Edit `docker-compose.yml` to configure; see docs below
 ```
 
-If you're in hurry to try Zulip, you can skip to
-[start the Zulip server](#starting-the-server), but for production
-use, you'll need to do some configuration.
+If you're in hurry to try Zulip, you can skip to [start the Zulip
+server](#starting-the-server), but for production use, you'll need to
+generate secrets and do some configuration.
 
 ### Configuration
 
@@ -122,20 +126,20 @@ discussion in the main [Zulip installation docs][install-normal]):
 - `SETTING_ZULIP_ADMINISTRATOR`: The email address to receive error
   and support emails generated by the Zulip server and its users.
 
-**Mandatory settings for serious use**. Before you allow
-production traffic, you need to also set these:
+**Mandatory settings for production use**. Before you allow production
+traffic, you need to generate secrets. We recommend using long random
+strings of alphanumeric characters for your secrets; not every special
+character works.
 
-- `POSTGRES_PASSWORD` and `SECRETS_postgres_password` should both be a
-  password for the Zulip container to authenticate to the Postgres
-  container. Since you won't use this directly, you just want a long,
-  randomly generated string. While `SECRETS_postgres_password` is
+- `POSTGRES_PASSWORD` is the password for the PostgreSQL
+  instance. `SECRETS_postgres_password` configures the Zulip server to
+  know the PostgreSQL password. While `SECRETS_postgres_password` is
   synced to the Zulip container on every boot, `POSTGRES_PASSWORD` is
-  only accessed by the postgres container on first boot, so if you
-  later want to change your postgres password after booting the
-  container, you'll need to either do an
-  [ALTER ROLE][postgres-alter-role] query inside the `postgres`
-  container or rebuild the postgres database (only if you don't need
-  your data!).
+  only accessed by the PostgreSQL container on first boot, so if you
+  later want to change your PostgreSQL password after booting the
+  container, you'll need to either do an [ALTER
+  ROLE][postgres-alter-role] query inside the `postgres` container or
+  rebuild the PostgreSQL database (only if you don't need your data!).
 - `RABBITMQ_DEFAULT_PASS` and `SECRETS_rabbitmq_password` are similar,
   just for the RabbitMQ container.
 - `MEMCACHED_PASSWORD` and `SECRETS_memcached_password` are similar,
@@ -172,14 +176,18 @@ which you need to encode in the YAML file. For example,
   comma-separated list of the backend names
   (E.g. `"EmailAuthBackend,GitHubAuthBackend"`).
 
+- LDAP authentication currently requires
+  [`MANUAL_CONFIGURATION`](#manual-configuration) in order to encode
+  the `LDAPSearch` logic, see below.
+
 **Reducing RAM usage**. By default, the Zulip server automatically detect
 whether the system has enough memory to run Zulip queue processors in the
 higher-throughput but more multiprocess mode (or to save 1.5GiB of RAM with
-the multithreaded mode). This algorithm might see the host's memory, not the
+the multi-threaded mode). This algorithm might see the host's memory, not the
 docker container's memory. Set to `QUEUE_WORKERS_MULTIPROCESS` to `true` or
 `false` to override the automatic calculation.
 
-**SSL Certificates**. By default, the image will generate a self-signed cert.
+**SSL Certificates**. By default, the image will generate a self-signed certificate.
 You can set `SSL_CERTIFICATE_GENERATION: "certbot"` within `docker-compose.yml`
 to enable automatically-renewed Let's Encrypt certificates. By using certbot
 here, you are agreeing to the [Let's Encrypt
@@ -190,10 +198,10 @@ putting it in `/opt/docker/zulip/zulip/certs/` (by default, the
 `zulip` container startup script will generate a self-signed certificate and
 install it in that directory).
 
-**Load balancer**. To tell Zulip that it is behind a load balancer,
-you must set `LOADBALANCER_IPS` to a comma-separated list of IPs or
-CIDR ranges. This will tell Zulip to pass the real IP of the client,
-instead of the IP of the load balancer itself, by [setting the
+**Reverse proxies**. To tell Zulip that it is behind a reverse proxy
+or load balancer, you must set `LOADBALANCER_IPS` to a comma-separated
+list of IPs or CIDR ranges. This will tell Zulip to pass the real IP
+of the client, instead of the IP of the proxy itself, by [setting the
 IPs][loadbalancer-ips] under `[loadbalancer]` in `zulip.conf`.
 
 Your proxy must provide both `X-Forwarded-For` and
@@ -202,11 +210,11 @@ Your proxy must provide both `X-Forwarded-For` and
 [HAProxy][haproxy-proxy] configurations, as well as notes for [other
 proxies][other-proxy].
 
-[loadbalancer-ips]: https://zulip.readthedocs.io/en/latest/production/deployment.html#configuring-zulip-to-trust-proxies
-[nginx-proxy]: https://zulip.readthedocs.io/en/latest/production/deployment.html#nginx-configuration
-[apache2-proxy]: https://zulip.readthedocs.io/en/latest/production/deployment.html#apache2-configuration
-[haproxy-proxy]: https://zulip.readthedocs.io/en/latest/production/deployment.html#haproxy-configuration
-[other-proxy]: https://zulip.readthedocs.io/en/latest/production/deployment.html#other-proxies
+[loadbalancer-ips]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#configuring-zulip-to-trust-proxies
+[nginx-proxy]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#nginx-configuration
+[apache2-proxy]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#apache2-configuration
+[haproxy-proxy]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#haproxy-configuration
+[other-proxy]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#other-proxies
 
 ### Manual configuration
 
@@ -253,7 +261,7 @@ you'd prefer to have the containers run in the background, you can use
 
 If you want to build the Zulip image yourself, you can do that by
 running `docker-compose build`; see also
-[the documentation on building a custom Git version version](#upgrading-from-a-git-repository).
+[the documentation on building a custom Git version version](UPGRADING.md#upgrading-from-a-git-repository).
 
 ### Connecting to your Zulip server
 
@@ -266,10 +274,21 @@ login until you create an organization, but visiting the URL is a good
 way to confirm that your networking configuration is working
 correctly.
 
-You can now follow the normal instructions for how to
+### Creating your organization
+
+You can now follow the normal Zulip installer instructions for how to
 [create a Zulip organization and log in][create-organization] to your
-new Zulip server (though see the following section for how to run
-management commands).
+new Zulip server. You'll generate the realm creation link as follows:
+
+```bash
+docker-compose exec -u zulip zulip \
+    "/home/zulip/deployments/current/manage.py generate_realm_creation_link"
+```
+
+But don't forget to review the [getting started][next-steps] links at
+the end of the main installation guide.
+
+[next-steps]: https://zulip.readthedocs.io/en/latest/production/install.html#getting-started-with-zulip
 
 ### Running management commands
 
@@ -280,9 +299,9 @@ The following are helpful examples:
 ```bash
 # Get a (root) shell in the container so you can access logs
 docker-compose exec zulip bash
-# Create the initial Zulip organization
+# Run a Zulip management command
 docker-compose exec -u zulip zulip \
-    /home/zulip/deployments/current/manage.py generate_realm_creation_link
+    "/home/zulip/deployments/current/manage.py list_realms"
 ```
 
 Since that process for running management commands is a pain, we recommend
@@ -299,7 +318,7 @@ The Zulip build process installs packages via `yarn` and `pip`, and
 these need packages to be configured to use your custom CA
 certificates. You will need to get your certificate bundle into the
 docker image, either by adding a `COPY` somewhere or by replacing the
-`FROM`s with a custom ubuntu image that includes your bundle. The
+`FROM`s with a custom Ubuntu image that includes your bundle. The
 recommended way is to have your own base image which has your bundle
 ready at the default `/etc/ssl/certs/ca-certificates.crt`.
 
@@ -344,9 +363,8 @@ https://chat.zulip.org/#narrow/stream/21-provision-help/subject/K8.20and.20Helm/
 This image is not designed to make it easy to run multiple copies of
 the `zulip` application server container (and you need to know a lot
 about Zulip to do this sort of thing successfully). If you're
-interested in running a high-availablity Zulip installation, your best
-bet is to get in touch with the Zulip support team at
-`support@zulip.com`.
+interested in running a high-availability Zulip installation, your best
+bet is to get in touch with the Zulip team at `sales@zulip.com`.
 
 ## Networking and reverse proxy configuration
 
@@ -359,7 +377,7 @@ See also the
 [Zulip documentation on reverse proxies][reverse-proxy-docs]
 
 [proxy-wiki-page]: https://github.com/zulip/docker-zulip/wiki/Proxying-via-nginx-on-host-machine
-[reverse-proxy-docs]: https://zulip.readthedocs.io/en/latest/production/deployment.html#putting-the-zulip-application-behind-a-reverse-proxy
+[reverse-proxy-docs]: https://zulip.readthedocs.io/en/latest/production/reverse-proxies.html#reverse-proxies
 
 By default, Zulip will only interact with user traffic over HTTPS.
 However, if your networking environment is such that the Zulip server
@@ -409,5 +427,5 @@ make a high-quality Docker image for Zulip possible.
 [install-normal]: https://zulip.readthedocs.io/en/latest/production/install.html#installer-options
 [outgoing-email]: https://zulip.readthedocs.io/en/latest/production/email.html
 [server-settings]: https://zulip.readthedocs.io/en/latest/production/settings.html
-[prod-settings-template]: https://github.com/zulip/zulip/blob/master/zproject/prod_settings_template.py
+[prod-settings-template]: https://github.com/zulip/zulip/blob/main/zproject/prod_settings_template.py
 [create-organization]: http://zulip.readthedocs.io/en/latest/production/install.html#step-3-create-a-zulip-organization-and-log-in
