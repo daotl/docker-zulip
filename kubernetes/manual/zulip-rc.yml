@@ -86,7 +86,7 @@ spec:
             - name: postgresql-persistent-storage
               mountPath: /var/lib/postgresql/data
         - name: zulip
-          image: zulip/docker-zulip:10.4-0
+          image: zulip/docker-zulip:11.0-0
           resources:
             limits:
               cpu: 100m
@@ -137,6 +137,9 @@ spec:
           # - name: SETTING_PUSH_NOTIFICATION_BOUNCER_URL
           #   value: 'https://push.zulipchat.com'
           ports:
+            - containerPort: 25
+              name: smtp
+              protocol: TCP
             - containerPort: 80
               name: http
               protocol: TCP
