@@ -222,6 +222,11 @@
                     "path": {
                       "type": "string",
                       "description": "Path for the Ingress rule."
+                    },
+                    "pathType": {
+                      "type": "string",
+                      "description": "Path type for the Ingress rule.",
+                      "enum": ["Exact", "Prefix", "ImplementationSpecific"]
                     }
                   }
                 }

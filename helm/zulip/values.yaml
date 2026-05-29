@@ -87,6 +87,7 @@ ingress:
       ## Serves Zulip root of the chosen host domain.
       paths:
         - path: /
+          pathType: Prefix
   ## Set a specific secret to read the TLS certificate from. If you
   ## use cert-manager, it will save the TLS secret here. If you do
   ## not, you need to manually create a secret with your TLS
