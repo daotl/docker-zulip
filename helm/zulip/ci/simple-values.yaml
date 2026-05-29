@@ -1,0 +1,31 @@
+---
+image:
+  pullPolicy: Never
+  repository: zulip/zulip-server
+  # CI will pass tag: of the PR
+
+zulip:
+  environment:
+    SECRETS_secret_key: set-secure-zulip-secret-key
+    SETTING_ZULIP_ADMINISTRATOR: "admin@example.net"
+    SETTING_EXTERNAL_HOST: zulip.example.net
+
+memcached:
+  auth:
+    password: set-secure-memcached-password
+
+rabbitmq:
+  auth:
+    password: set-secure-rabbitmq-password
+    erlangCookie: set-secure-cookie-password
+
+redis:
+  auth:
+    password: set-secure-redis-password
+
+postgresql:
+  auth:
+    # # postgres admin user password
+    postgresPassword: set-secure-pg-postgres-password
+    # # postgres zulip user password
+    password: set-secure-pg-zulip-password

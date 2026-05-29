@@ -1,0 +1,53 @@
+apiVersion: v2
+description: Zulip is an open source threaded team chat that helps teams stay productive and focused.
+name: zulip
+type: application
+icon: https://raw.githubusercontent.com/zulip/zulip/main/static/images/logo/zulip-icon-square.svg
+maintainers:
+  - name: zulip
+    url: https://chat.zulip.org/
+## This is the chart version. This version number should be
+## incremented each time you make changes to the chart and its
+## templates. The chart's version is independent of the application
+## version (appVersion); breaking changes to the chart's values API
+## bump the chart's major. Versions are expected to follow Semantic
+## Versioning (https://semver.org/).
+version: 2.0.0
+
+## This is the version number of the application being deployed. This
+## version number should be incremented each time you make changes to
+## the application. Versions are not expected to follow Semantic
+## Versioning. They should reflect the version the application is
+## using.  It is recommended to use it with quotes.
+appVersion: "12.0-1"
+dependencies:
+  - name: memcached
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: memcached.enabled
+    tags:
+      - memcached
+    version: 8.1.5
+  - name: rabbitmq
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: rabbitmq.enabled
+    tags:
+      - rabbitmq
+    version: 16.0.14
+  - name: redis
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: redis.enabled
+    tags:
+      - redis
+    version: 23.2.12
+  - name: postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.enabled
+    tags:
+      - postgresql
+    ## Note: values.yaml overwrites postgresql image to zulip/zulip-postgresql:14
+    version: 18.1.8
+
+sources:
+  - https://github.com/zulip/zulip
+  - https://github.com/zulip/docker-zulip
+  - https://ghcr.io/zulip/zulip-server

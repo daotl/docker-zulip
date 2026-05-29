@@ -1,0 +1,5 @@
+---
+services:
+  zulip:
+    environment:
+      CONFIG_application_server__queue_workers_multiprocess: false

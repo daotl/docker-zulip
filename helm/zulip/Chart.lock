@@ -1,0 +1,15 @@
+dependencies:
+- name: memcached
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 8.1.5
+- name: rabbitmq
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 16.0.14
+- name: redis
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 23.2.12
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 18.1.8
+digest: sha256:32f414cfcb4dd298945f8cc2fc93498b6079727b5caa492414e60e40b3f60b85
+generated: "2026-02-12T15:14:11.180683-05:00"

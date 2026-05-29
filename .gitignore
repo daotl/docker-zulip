@@ -6,8 +6,18 @@
 .idea/
 *.tmproj
 
-# dev files
-docker-compose-dev.yml
-kubernetes/*-dev.yml
-kubernetes/chart/zulip/values-local.yaml
-kubernetes/chart/zulip/charts/
+# Secrets
+/.env
+
+# Local configuration
+/compose.override.yaml
+/helm/zulip/values-local.yaml
+
+# Cached sub-charts
+/helm/zulip/charts/
+
+# Node (prettier is a dev dependency for CI linting)
+/node_modules/
+
+# Built docs
+/docs/_build/

@@ -1,0 +1,9 @@
+---
+services:
+  zulip:
+    environment: !override
+      # The !override removes the default SETTING_ values.
+      MANUAL_CONFIGURATION: True
+    volumes:
+      - ./ci/manual_configuration/settings.py:/etc/zulip/settings.py
+    secrets: !reset []

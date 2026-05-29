@@ -1,0 +1,26 @@
+---
+# Test: Environment variables using valueFrom (Kubernetes Secret refs).
+zulip:
+  environment:
+    SETTING_ZULIP_ADMINISTRATOR: "admin@example.com"
+    SETTING_EXTERNAL_HOST: zulip.example.com
+    SECRETS_secret_key:
+      valueFrom:
+        secretKeyRef:
+          name: zulip-secrets
+          key: secret-key
+
+memcached:
+  auth:
+    password: test-memcached
+rabbitmq:
+  auth:
+    password: test-rabbitmq
+    erlangCookie: test-cookie
+redis:
+  auth:
+    password: test-redis
+postgresql:
+  auth:
+    postgresPassword: test-pg-admin
+    password: test-pg-zulip
